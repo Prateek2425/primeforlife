@@ -1,0 +1,7 @@
+#if($util.isNull($ctx.identity) || $util.isNull($ctx.identity.sub))
+    $util.unauthorized();
+#end
+{
+    "version": "2018-05-29",
+    "statements":   ["SELECT id, sub, userType, firstName, lastName, email, phoneNumber, country, dob, profileUrl, timezone FROM User WHERE sub = '$ctx.identity.sub' LIMIT 1;"]
+}

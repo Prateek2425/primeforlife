@@ -1,0 +1,157 @@
+{
+  "auth": {
+    "userPoolGroups": {
+      "service": "Cognito-UserPool-Groups",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [
+        {
+          "category": "auth",
+          "resourceName": "PrimeAppAuth",
+          "attributes": [
+            "UserPoolId",
+            "AppClientIDWeb",
+            "AppClientID",
+            "IdentityPoolId"
+          ]
+        }
+      ]
+    },
+    "PrimeAppAuth": {
+      "service": "Cognito",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [
+        {
+          "category": "function",
+          "resourceName": "PrimeAppAuthPostConfirmation",
+          "triggerProvider": "Cognito",
+          "attributes": [
+            "Arn",
+            "Name"
+          ]
+        }
+      ],
+      "customAuth": false
+    }
+  },
+  "api": {
+    "PrimeAppGraphQL": {
+      "service": "AppSync",
+      "providerPlugin": "awscloudformation",
+      "output": {
+        "authConfig": {
+          "additionalAuthenticationProviders": [
+            {
+              "authenticationType": "API_KEY",
+              "apiKeyConfig": {
+                "apiKeyExpirationDays": 7,
+                "description": ""
+              }
+            }
+          ],
+          "defaultAuthentication": {
+            "authenticationType": "AMAZON_COGNITO_USER_POOLS",
+            "userPoolConfig": {
+              "userPoolId": "authPrimeAppAuth"
+            }
+          }
+        }
+      },
+      "rdsInit": true
+    }
+  },
+  "rds": {
+    "RdsParam": {
+      "service": "rds",
+      "providerPlugin": "awscloudformation"
+    }
+  },
+  "function": {
+    "demoLambdaExecution": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda",
+      "dependsOn": [
+        {
+          "category": "rds",
+          "resourceName": "RdsParam",
+          "attributes": [
+            "RdsClusterArn",
+            "RdsSecretArn",
+            "RdsDBName"
+          ]
+        }
+      ]
+    },
+    "PrimeAppAuthPostConfirmation": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda",
+      "dependsOn": [
+        {
+          "category": "rds",
+          "resourceName": "RdsParam",
+          "attributes": [
+            "RdsClusterArn",
+            "RdsSecretArn",
+            "RdsDBName"
+          ]
+        }
+      ]
+    },
+    "PrimeAppCreateProgramVideoEngagement": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda",
+      "dependsOn": [
+        {
+          "category": "rds",
+          "resourceName": "RdsParam",
+          "attributes": [
+            "RdsClusterArn",
+            "RdsSecretArn",
+            "RdsDBName"
+          ]
+        }
+      ]
+    },
+    "PrimeAppMyPreviousWatchVideo": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda",
+      "dependsOn": [
+        {
+          "category": "rds",
+          "resourceName": "RdsParam",
+          "attributes": [
+            "RdsClusterArn",
+            "RdsSecretArn",
+            "RdsDBName"
+          ]
+        }
+      ]
+    },
+    "PrimeAppCreateMessageByClient": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda",
+      "dependsOn": [
+        {
+          "category": "api",
+          "resourceName": "PrimeAppGraphQL",
+          "attributes": [
+            "GraphQLAPIIdOutput"
+          ]
+        },
+        {
+          "category": "rds",
+          "resourceName": "RdsParam",
+          "attributes": [
+            "RdsClusterArn",
+            "RdsSecretArn",
+            "RdsDBName"
+          ]
+        }
+      ]
+    }
+  }
+}

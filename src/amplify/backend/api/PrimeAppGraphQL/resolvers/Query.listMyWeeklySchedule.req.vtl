@@ -1,0 +1,7 @@
+#if($util.isNull($ctx.identity) || $util.isNull($ctx.identity.sub))
+    $util.unauthorized();
+#end
+{
+    "version": "2018-05-29",
+    "statements":   ["SELECT cs.* FROM ClientSchedule as cs LEFT JOIN User as u ON cs.clientId = u.id WHERE u.sub = '$ctx.identity.sub';"]
+}

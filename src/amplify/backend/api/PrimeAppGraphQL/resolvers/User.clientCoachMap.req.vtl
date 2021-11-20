@@ -1,0 +1,8 @@
+#if( $util.isNull($ctx.source.id) )
+    #return
+#else
+    {
+    "version": "2018-05-29",
+    "statements":   ["SELECT * FROM ClientCoachMapping WHERE clientId = $ctx.source.id LIMIT 1"]
+}
+#end

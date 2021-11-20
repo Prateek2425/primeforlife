@@ -1,0 +1,10 @@
+[
+    {
+        "groupName": "coach",
+        "precedence": 1
+    },
+    {
+        "groupName": "client",
+        "precedence": 2
+    }
+]

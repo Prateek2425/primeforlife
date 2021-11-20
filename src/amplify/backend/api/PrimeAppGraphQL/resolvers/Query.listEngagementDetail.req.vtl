@@ -1,0 +1,7 @@
+#if($util.isNull($ctx.identity) || $util.isNull($ctx.identity.sub))
+    $util.unauthorized();
+#end
+{
+    "version": "2018-05-29",
+    "statements":   ["SELECT cpv.*, DATE_FORMAT(watchStartTime, '%Y-%m-%dT%H:%i:%s.000Z') as watchStartTime, DATE_FORMAT(watchEndTime, '%Y-%m-%dT%H:%i:%s.000Z') as watchEndTime, DATE(watchStartTime) as watchDate, DAYNAME(watchStartTime) as watchDay FROM ClientProgramVideo AS cpv LEFT JOIN ClientProgramMapping AS cpm ON cpm.id = cpv.clientProgramMappingId LEFT JOIN User AS u ON u.id = cpm.clientId WHERE u.sub = '$ctx.identity.sub' AND cpv.isCompleteWatch = 1 AND cpv.watchStartTime > '$context.args.minDateTime' GROUP BY DATE(watchStartTime) ORDER BY cpv.watchStartTime DESC;"]
+}

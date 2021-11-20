@@ -1,0 +1,8 @@
+#if( $util.isNull($ctx.source.programId) )
+    #return
+#else
+    {
+        "version": "2018-05-29",
+        "statements":   ["SELECT * FROM Program WHERE id = $ctx.source.programId LIMIT 1"]
+    }
+#end

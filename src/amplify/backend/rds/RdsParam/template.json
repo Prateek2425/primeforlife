@@ -1,0 +1,80 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "An auto-generated nested stack.",
+    "Metadata": {},
+    "Parameters": {
+        "env": {
+            "Type": "String",
+            "Description": "The environment name. e.g. Dev, Test, or Production",
+            "Default": "NONE"
+        },
+        "rdsRegion": {
+            "Type": "String",
+            "Description": "The region that the RDS Cluster is located in."
+        },
+        "rdsClusterIdentifier": {
+            "Type": "String",
+            "Description": "The ARN identifier denoting the RDS cluster."
+        },
+        "rdsSecretStoreArn": {
+            "Type": "String",
+            "Description": "The ARN for the Secret containing the access for the RDS cluster."
+        },
+        "rdsDatabaseName": {
+            "Type": "String",
+            "Description": "The name of the database within the RDS cluster to use."
+        }
+    },
+    "Resources": {
+        "EmptyResource": {
+            "Type": "Custom::EmptyResource",
+            "Condition": "AlwaysFalse"
+        }
+    },
+    "Conditions": {
+        "HasEnvironmentParameter": {
+            "Fn::Not": [
+                {
+                    "Fn::Equals": [
+                        {
+                            "Ref": "env"
+                        },
+                        "NONE"
+                    ]
+                }
+            ]
+        },
+        "AlwaysFalse": {
+            "Fn::Equals": [
+                "true",
+                "false"
+            ]
+        }
+    },
+    "Outputs": {
+        "RdsRegion": {
+            "Description": "RDS Region",
+            "Value": {
+                "Ref": "rdsRegion"
+            }
+        },
+        "RdsClusterArn": {
+            "Description": "RDS Cluster ARN",
+            "Value": {
+                "Ref": "rdsClusterIdentifier"
+            }
+        },
+        "RdsSecretArn": {
+            "Description": "RDS Secret store ARN",
+            "Value": {
+                "Ref": "rdsSecretStoreArn"
+            }
+        },
+        "RdsDBName": {
+            "Description": "RDS DB Name",
+            "Value": {
+                "Ref": "rdsDatabaseName"
+            }
+        }
+    }
+}

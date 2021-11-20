@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "storage": {
+      "Message:@model(appsync)": [
+        "create",
+        "read"
+      ]
+    }
+  },
+  "lambdaLayers": []
+}

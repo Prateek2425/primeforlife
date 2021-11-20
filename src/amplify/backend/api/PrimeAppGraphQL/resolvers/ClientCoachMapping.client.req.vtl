@@ -1,0 +1,8 @@
+#if( $util.isNull($ctx.source.clientId) )
+    #return
+#else
+    {
+    "version": "2018-05-29",
+    "statements":   ["SELECT * FROM User WHERE id = $ctx.source.clientId AND userType = 'client' LIMIT 1"]
+}
+#end

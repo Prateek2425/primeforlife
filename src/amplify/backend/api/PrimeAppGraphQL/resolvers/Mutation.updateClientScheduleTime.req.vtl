@@ -1,0 +1,14 @@
+#if($util.isNull($ctx.identity) || $util.isNull($ctx.identity.sub))
+    $util.unauthorized();
+#else
+{
+    #set( $startTime = $context.args.updateClientScheduleTimeInput.startTime )
+    #set( $scheduleday = $context.args.updateClientScheduleTimeInput.scheduleDay )
+
+    "version": "2018-05-29",
+    "statements":   [
+        "UPDATE ClientSchedule SET startTime = '$startTime' WHERE scheduleDay = '$scheduleday' AND clientId IN (SELECT id FROM User WHERE sub = '$ctx.identity.sub');",
+        "SELECT cs.* FROM User u, ClientSchedule cs WHERE cs.clientId = u.id AND scheduleDay = '$scheduleday' AND u.sub = '$ctx.identity.sub' LIMIT 1;"
+    ]
+}
+#end

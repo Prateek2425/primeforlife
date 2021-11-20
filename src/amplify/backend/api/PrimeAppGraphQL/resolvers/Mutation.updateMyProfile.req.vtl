@@ -1,0 +1,15 @@
+#if($util.isNull($ctx.identity) || $util.isNull($ctx.identity.sub))
+    $util.unauthorized();
+#end
+#set( $updateList = {} )
+#foreach( $entry in $ctx.args.updateMyProfileInput.keySet() )
+    #set( $discard = $updateList.put($entry, "'$ctx.args.updateMyProfileInput[$entry]'") )
+#end
+#set( $update = $updateList.toString().replace("{","").replace("}","") )
+{
+    "version": "2018-05-29",
+    "statements":   [
+        "UPDATE User SET $update WHERE sub = '$ctx.identity.sub';", 
+        "SELECT * FROM User WHERE sub = '$ctx.identity.sub' LIMIT 1;"
+    ]
+}

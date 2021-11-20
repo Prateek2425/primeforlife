@@ -1,0 +1,12 @@
+#if( $util.isNull($ctx.source.id) )
+    #return
+#else
+#set( $limit = $util.defaultIfNull($context.args.limit, 100) )
+#set( $page = $util.defaultIfNull($context.args.page, 1) )
+#set( $pageTmp = $page - 1 )
+#set( $offset = $pageTmp * $limit )
+{
+    "version": "2018-05-29",
+    "statements": ["SELECT * FROM ProgramVideoMapping WHERE libraryId = $ctx.source.id ORDER BY sortOrder LIMIT $offset, $limit;"]
+}
+#end

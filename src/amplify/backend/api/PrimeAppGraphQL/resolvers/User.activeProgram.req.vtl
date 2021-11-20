@@ -1,0 +1,10 @@
+#if( $util.isNull($ctx.source.id) )
+    #return
+#else
+    {
+    "version": "2018-05-29",
+    "statements": [
+        "SELECT p.* FROM ClientProgramMapping as cpm INNER JOIN Program as p ON cpm.programId = p.id WHERE cpm.clientId = $ctx.source.id AND cpm.isActiveProgram = 1 ORDER BY cpm.createdAt DESC  LIMIT 1;"
+    ]
+}
+#end

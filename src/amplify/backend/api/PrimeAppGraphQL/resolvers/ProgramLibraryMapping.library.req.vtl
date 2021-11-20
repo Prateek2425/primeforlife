@@ -1,0 +1,8 @@
+#if( $util.isNull($ctx.source.libraryId) )
+    #return
+#else
+    {
+        "version": "2018-05-29",
+        "statements":   ["SELECT * FROM Library WHERE id = $ctx.source.libraryId LIMIT 1"]
+    }
+#end

@@ -1,0 +1,288 @@
+type Message
+  @model(mutations: null, queries: null, subscriptions: null)
+  @key(name: "byclientCoachMap", fields: ["clientCoachMappingId", "scheduleDate"], queryField: "listMessageByDate")
+  @auth(
+    rules: [
+      {
+        allow: owner
+        ownerField: "members"
+        identityClaim: "sub"
+        operations: [read]
+      }
+    ]
+  ) {
+  id: ID!
+  clientCoachMappingId: ID!
+  userId: ID!
+  members: [String!]!
+  contentType: messageContentTypeEnum!
+  contentText: String
+  contentUrl: AWSURL
+  scheduleDate: AWSDateTime!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+enum messageContentTypeEnum {
+  text
+  file
+}
+
+enum UserTypeEnum {
+  client
+  coach
+  referrer
+}
+
+input CreateMessageByClientInput {
+  clientCoachMappingId: ID!
+  contentText: String
+}
+
+## Client | Coach | Referrer
+type User {
+  id: Int!
+  sub: ID!
+  userType: UserTypeEnum!
+  email: String!
+  firstName: String
+  lastName: String
+  phoneNumber: String
+  country: String
+  dob: String
+  profileUrl: String
+  timezone: String!
+  clientCoachMap: [ ClientCoachMapping ] ## [1:N]Connection with ClientCoachMapping Based on User's id
+  clientProgramMap(page: Int!, limit: Int!): [ ClientProgramMapping ] ## [1:N]Connection with ClientProgramMapping Based on User's id
+  activeProgram: Program ## [1:1]Connection with Program Based on Active program condition
+}
+
+## Client & Coach Mapping
+type ClientCoachMapping {
+  id: Int!
+  coachId: Int!
+  clientId: Int!
+  coach: User! ## [1:1]Connection with User Based on coachId & condition
+  client: User! ## [1:1]Connection with User Based on clientId & condition
+}
+
+input UpdateMyProfileInput {
+  firstName: String
+  lastName: String
+  phoneNumber: String
+  country: String
+  dob: String
+  profileUrl: String
+  timezone: String!
+} 
+
+## VideoContent Entity
+type VideoContent {
+  id: Int!
+  title: String!
+  description: String!
+  videoUrl: String!
+  thumbnailUrl: String!
+  videoLength: Int!
+  createdAt: String
+  updatedAt: String
+}
+
+type VideoContentPaginationOutput {
+  result: [VideoContent]
+  totalResult: Int
+  limit: Int
+  page: Int
+  search: String
+}
+
+input VideoContentPagination {
+  limit: Int!
+  page: Int!
+  search: String
+}
+
+## Program Entity
+type Program {
+  id: Int!
+  title: String!
+  description: String
+  thumbnailUrl: String
+  sortOrder: Int!
+  programVideoMap(page: Int!, limit: Int!): [ ProgramVideoMapping ] ## [1:N]Connection with ProgramVideoMapping Based on Program's id
+}
+
+## Program's Video contents mapping
+type ProgramVideoMapping {
+  id: Int!
+  programId: Int!
+  videoContentId: Int!
+  sortOrder: Int!
+  program: Program ## [1:1]Connection with Program Based on programId
+  videoContent: VideoContent ## [1:1]Connection with VideoContent Based on videoContentId
+}
+
+## Client's Engagement with Video contents
+type ClientProgramMapping {
+  id: Int!
+  programId: Int!
+  clientId: Int!
+  isActiveProgram: Int!
+  isCompleted: Int!
+  program: Program ## [1:1]Connection with Program Based on programId
+  client: User ## [1:1]Connection with User Based on client
+}
+
+input CreateProgramVideoEngagementInput {
+  clientProgramMappingId: Int!
+  videoContentId: Int!
+  watchStartTime: AWSDateTime!
+  watchEndTime: AWSDateTime!
+  isCompleteWatch: Int!
+}
+
+## Client's Program Video mapping
+type ClientProgramVideo {
+  id: Int!
+  clientProgramMappingId: Int!
+  videoContentId: Int!
+  watchStartTime: AWSDateTime
+  watchEndTime: AWSDateTime
+  isCompleteWatch: Int!
+  videoContent: VideoContent ## [1:1]Connection with VideoContent Based on videoContentId
+}
+
+## Client's daily schedule
+type ClientSchedule {
+  id: Int!
+  clientId: Int!
+  scheduleDay: ScheduleDayEnum!
+  startTime: String!
+  # nextStartTime: String
+  # nextScheduleApplyAt: AWSDateTime
+}
+
+input UpdateClientScheduleTimeInput {
+  scheduleDay: ScheduleDayEnum!
+  startTime: String!
+} 
+
+enum ScheduleDayEnum {
+  MON
+  TUE
+  WED
+  THU
+  FRI
+  SAT
+  SUN
+}
+
+## Library Entity
+type Library {
+  id: Int!
+  title: String!
+  description: String!
+  libraryVideoMap(page: Int!, limit: Int!): [ LibraryVideoMapping ] ## [1:N]Connection with LibraryVideoMapping Based on Library's id
+}
+
+## Library Video Mapping
+type LibraryVideoMapping {
+  id: Int!
+  libraryId: Int!
+  videoContentId: Int!
+  sortOrder: Int!
+  category: LibraryVideoCategoryEnum!
+  library: Library ## [1:1]Connection with Library Based on libraryId
+  videoContent: VideoContent ## [1:1]Connection with VideoContent Based on videoContentId
+}
+
+enum LibraryVideoCategoryEnum {
+  workout
+  research
+}
+
+## Program's Library Mapping
+type ProgramLibraryMapping {
+  id: Int!
+  programId: Int!
+  libraryId: Int!
+  sortOrder: Int!
+  program: Program ## [1:1]Connection with Program Based on programId
+  library: Library ## [1:1]Connection with Library Based on libraryId
+}
+
+type Mutation {
+
+  createProgramVideoEngagement(
+    createProgramVideoEngagementInput: CreateProgramVideoEngagementInput!
+  ): ClientProgramVideo 
+    @function(name: "PrimeAppCreateProgramVideoEngagement-${env}")
+    @aws_cognito_user_pools
+
+  createMessageByClient(
+    createMessageByClientInput: CreateMessageByClientInput!
+  ): Message
+    @function(name: "PrimeAppCreateMessageByClient-${env}")
+    @aws_cognito_user_pools
+
+  updateMyProfile(
+    updateMyProfileInput: UpdateMyProfileInput!
+  ): User
+    @aws_cognito_user_pools
+
+  updateClientScheduleTime(
+    updateClientScheduleTimeInput: UpdateClientScheduleTimeInput!
+  ): ClientSchedule
+    @aws_cognito_user_pools
+}
+
+type Query {
+  
+  demoLambdaExecution(
+    input: VideoContentPagination!
+  ): VideoContentPaginationOutput @function(name: "demoLambdaExecution-${env}")
+
+  getMyProfile: User!
+    @aws_cognito_user_pools
+
+  getMyPreviousWatchVideo: ClientProgramVideo @function(name: "PrimeAppMyPreviousWatchVideo-${env}")
+    @aws_cognito_user_pools
+
+  getVideoContent(id: Int!): VideoContent
+    @aws_cognito_user_pools
+
+  getLibrary(id: Int!): Library
+    @aws_cognito_user_pools
+
+  listVideoContent: [ VideoContent ]
+    @aws_cognito_user_pools
+    
+  listMyCoach(page: Int!, limit: Int!): [ ClientCoachMapping ]
+    @aws_cognito_user_pools
+
+  listMyWeeklySchedule: [ ClientSchedule ]
+    @aws_cognito_user_pools
+  
+  listEngagementDetail(minDateTime: AWSDateTime!): [ ClientProgramVideo ]
+    @aws_cognito_user_pools
+  
+  listLibraryMapByProgram(programId: Int!, page: Int!, limit: Int!): [ ProgramLibraryMapping ]
+    @aws_cognito_user_pools
+
+  listLibraries(page: Int!, limit: Int!): [ Library ]
+    @aws_cognito_user_pools
+
+}
+
+type Subscription {
+
+  onCreateMessage(clientCoachMappingId: ID!): Message
+    @aws_subscribe(mutations: ["createMessageByClient"])
+    
+}
+
+schema {
+  query: Query
+  mutation: Mutation
+  subscription: Subscription
+}

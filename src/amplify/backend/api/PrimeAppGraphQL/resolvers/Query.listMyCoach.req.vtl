@@ -1,0 +1,11 @@
+#if($util.isNull($ctx.identity) || $util.isNull($ctx.identity.sub))
+    $util.unauthorized();
+#end
+#set( $limit = $util.defaultIfNull($context.args.limit, 100) )
+#set( $page = $util.defaultIfNull($context.args.page, 1) )
+#set( $pageTmp = $page - 1 )
+#set( $offset = $pageTmp * $limit )
+{
+    "version": "2018-05-29",
+    "statements":   ["SELECT ccp.* FROM ClientCoachMapping as ccp LEFT JOIN User as u ON ccp.clientId = u.id WHERE u.sub = '$ctx.identity.sub' LIMIT $offset, $limit;"]
+}

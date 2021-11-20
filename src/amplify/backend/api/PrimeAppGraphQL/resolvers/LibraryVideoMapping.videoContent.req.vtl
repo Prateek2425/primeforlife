@@ -1,0 +1,8 @@
+#if( $util.isNull($ctx.source.videoContentId) )
+    #return
+#else
+    {
+        "version": "2018-05-29",
+        "statements":   ["SELECT * FROM VideoContent WHERE id = $ctx.source.videoContentId LIMIT 1"]
+    }
+#end

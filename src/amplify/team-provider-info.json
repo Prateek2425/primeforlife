@@ -1,0 +1,60 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-primeappamplify-dev-155355-authRole",
+      "UnauthRoleArn": "arn:aws:iam::768802250477:role/amplify-primeappamplify-dev-155355-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::768802250477:role/amplify-primeappamplify-dev-155355-authRole",
+      "Region": "eu-west-1",
+      "DeploymentBucketName": "amplify-primeappamplify-dev-155355-deployment",
+      "UnauthRoleName": "amplify-primeappamplify-dev-155355-unauthRole",
+      "StackName": "amplify-primeappamplify-dev-155355",
+      "StackId": "arn:aws:cloudformation:eu-west-1:768802250477:stack/amplify-primeappamplify-dev-155355/182eff40-eba0-11eb-a3b0-02cafffd7385",
+      "AmplifyAppId": "d7nhrms7hiuir",
+      "AuthTriggerTemplateURL": "https://s3.amazonaws.com/amplify-primeappamplify-dev-155355-deployment/amplify-cfn-templates/auth/auth-trigger-cloudformation-template.json"
+    },
+    "categories": {
+      "api": {
+        "PrimeAppGraphQL": {
+          "rdsRegion": "eu-west-1",
+          "rdsClusterIdentifier": "arn:aws:rds:eu-west-1:768802250477:cluster:primer-app-amplify-sls-cluster",
+          "rdsSecretStoreArn": "arn:aws:secretsmanager:eu-west-1:768802250477:secret:rds-db-credentials/cluster-KBUDEE6P6CCODSRQV6Y7SSALWU/master-PQSjSL",
+          "rdsDatabaseName": "PrimeApp"
+        }
+      },
+      "auth": {
+        "userPoolGroups": {},
+        "PrimeAppAuth": {}
+      },
+      "function": {
+        "demoLambdaExecution": {
+          "deploymentBucketName": "amplify-primeappamplify-dev-155355-deployment",
+          "s3Key": "amplify-builds/demoLambdaExecution-65322b666c6477434663-build.zip"
+        },
+        "PrimeAppAuthPostConfirmation": {
+          "deploymentBucketName": "amplify-primeappamplify-dev-155355-deployment",
+          "s3Key": "amplify-builds/PrimeAppAuthPostConfirmation-305768376c7168774f53-build.zip"
+        },
+        "PrimeAppGetMyProfile": {
+          "deploymentBucketName": "amplify-primeappamplify-dev-155355-deployment",
+          "s3Key": "amplify-builds/PrimeAppGetMyProfile-34555944484932517a52-build.zip"
+        },
+        "PrimeAppGetMyOtherData": {
+          "deploymentBucketName": "amplify-primeappamplify-dev-155355-deployment",
+          "s3Key": "amplify-builds/PrimeAppGetMyOtherData-6a594341524533637271-build.zip"
+        },
+        "PrimeAppCreateProgramVideoEngagement": {
+          "deploymentBucketName": "amplify-primeappamplify-dev-155355-deployment",
+          "s3Key": "amplify-builds/PrimeAppCreateProgramVideoEngagement-6e45654e496d4d692f42-build.zip"
+        },
+        "PrimeAppMyPreviousWatchVideo": {
+          "deploymentBucketName": "amplify-primeappamplify-dev-155355-deployment",
+          "s3Key": "amplify-builds/PrimeAppMyPreviousWatchVideo-744d3658774a74697772-build.zip"
+        },
+        "PrimeAppCreateMessageByClient": {
+          "deploymentBucketName": "amplify-primeappamplify-dev-155355-deployment",
+          "s3Key": "amplify-builds/PrimeAppCreateMessageByClient-3155444b4f393970706e-build.zip"
+        }
+      }
+    }
+  }
+}
